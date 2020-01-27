@@ -1,6 +1,6 @@
 <p><img src="https://pbs.twimg.com/media/CcZdW37UcAA9DZz.png" alt="traefik logo" title="traefik" align="right" height="60" /></p>
 
-Ansible Role Traefik
+Ansible Role :clapper: :twisted_rightwards_arrows: Traefik
 =========
 [![Galaxy Role](https://img.shields.io/ansible/role/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
 [![Downloads](https://img.shields.io/ansible/role/d/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
