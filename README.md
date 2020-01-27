@@ -5,6 +5,7 @@ Ansible Role :clapper: :twisted_rightwards_arrows: Traefik
 [![Galaxy Role](https://img.shields.io/ansible/role/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
 [![Downloads](https://img.shields.io/ansible/role/d/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
 [![Build Status](https://travis-ci.org/0x0I/ansible-role-traefik.svg?branch=master)](https://travis-ci.org/0x0I/ansible-role-traefik)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Table of Contents**
   - [Supported Platforms](#supported-platforms)
@@ -74,7 +75,7 @@ default example:
 License
 -------
 
-Apache, BSD, MIT
+MIT
 
 Author Information
 ------------------
