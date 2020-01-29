@@ -1,0 +1,24 @@
+---
+- name: Create configuration directory
+  become: true
+  file:
+    path: "{{ config.path|default(config_dir) }}"
+    state: directory
+    owner: "{{ traefik_user }}"
+    group: "{{ traefik_user }}"
+  tags:
+    - config
+
+- name: Render configuration file
+  become: true
+  template:
+    src: traefik.yml.j2
+    dest: "{{ config.path|default(config_dir) }}/{{ config.name|default('traefik') }}.yml"
+    owner: "{{ traefik_user }}"
+    group: "{{ traefik_user }}"
+    mode: 0664
+    backup: true
+  vars:
+    conf: "{{ config.config }}"
+  tags:
+    - config
