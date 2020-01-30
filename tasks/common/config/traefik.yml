@@ -2,7 +2,7 @@
 - name: Create configuration directory
   become: true
   file:
-    path: "{{ config.path|default(config_dir) }}"
+    path: "{{ cfg.path|default(config_dir) }}"
     state: directory
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
@@ -11,9 +11,9 @@
 
 - name: Create configuration log directory
   become: true
-  when: config.traefikLog.filePath is defined and config.traefikLog.filePath|length > 0
+  when: cfg.config.traefikLog.filePath is defined and cfg.config.traefikLog.filePath|length > 0
   file:
-    path: "{{ config.traefikLog.filePath|dirname }}"
+    path: "{{ cfg.config.traefikLog.filePath|dirname }}"
     state: directory
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
@@ -22,9 +22,9 @@
 
 - name: Create configuration access log directory
   become: true
-  when: config.accessLog.filePath is defined and config.accessLog.filePath|length > 0
+  when: cfg.config.accessLog.filePath is defined and cfg.config.accessLog.filePath|length > 0
   file:
-    path: "{{ config.accessLog.filePath|dirname }}"
+    path: "{{ cfg.config.accessLog.filePath|dirname }}"
     state: directory
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
@@ -35,12 +35,12 @@
   become: true
   template:
     src: traefik.yml.j2
-    dest: "{{ config.path|default(config_dir) }}/{{ config.name|default(_service_name) }}.yml"
+    dest: "{{ cfg.path|default(config_dir) }}/{{ cfg.name|default(_service_name) }}.yml"
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
     mode: 0664
     backup: true
   vars:
-    conf: "{{ config.config }}"
+    conf: "{{ cfg.config }}"
   tags:
     - config
