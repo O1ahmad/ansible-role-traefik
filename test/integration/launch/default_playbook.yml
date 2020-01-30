@@ -4,6 +4,10 @@
   roles:
     - role: ansible-role-traefik
       vars:
+        extra_run_args:
+          - --log
+          - --providers.file /etc/traefik/traefik.yml
+          - --log.level DEBUG
         traefik_configs:
           - config:
               entryPoints:
