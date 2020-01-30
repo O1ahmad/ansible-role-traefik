@@ -4,6 +4,6 @@
   include_tasks: "common/config/traefik.yml"
   with_items: "{{ traefik_configs }}"
   loop_control:
-    loop_var: config
+    loop_var: cfg
   tags:
     - config

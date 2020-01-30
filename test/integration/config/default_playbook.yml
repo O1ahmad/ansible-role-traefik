@@ -6,6 +6,11 @@
       vars:
         traefik_configs:
           - config:
+              log_level: debug
+              traefikLog:
+                filePath: /var/log/traefik/traefik.log
+              accessLog:
+                filePath: /var/log/traefik/access/traefik-access.log
               entryPoints:
                 web:
                   address: :8081

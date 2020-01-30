@@ -33,3 +33,15 @@ describe file('/mnt/etc/traefik/example-config.yml') do
   its('content') { should match('middlewares:') }
   its('content') { should match('services:') }
 end
+
+describe directory('/var/log/traefik') do
+  it { should exist }
+  its('owner') { should eq 'traefik' }
+  its('group') { should eq 'traefik' }
+end
+
+describe directory('/var/log/traefik/access') do
+  it { should exist }
+  its('owner') { should eq 'traefik' }
+  its('group') { should eq 'traefik' }
+end
