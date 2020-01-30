@@ -12,4 +12,10 @@ archive_options: []
 config_dir: /etc/traefik
 traefik_config: {}
 
+_service_name: traefik
+
+exe_dir: /usr/local/bin
+extra_run_args: []
+custom_unit_properties: {}
+
 perform_uninstall: false

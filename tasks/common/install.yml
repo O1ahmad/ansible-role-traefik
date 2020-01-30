@@ -34,3 +34,15 @@
   include_tasks: "common/install/install_{{ install_type }}.yml"
   tags:
     - install
+
+- name: Create a symbolic link to installed binary
+  file:
+    src: "{{ install_dir }}/traefik"
+    dest: "{{ exe_dir }}/traefik"
+    owner: "{{ traefik_user }}"
+    group: "{{ traefik_user }}"
+    state: link
+  when: install_type == "archive"
+  tags:
+    - install
+    - archive

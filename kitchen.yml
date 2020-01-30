@@ -104,3 +104,9 @@ suites:
     verifier:
       inspec_tests:
         - path: test/integration/config
+  - name: launch
+    provisioner:
+      playbook: test/integration/launch/default_playbook.yml
+    verifier:
+      inspec_tests:
+        - path: test/integration/launch
