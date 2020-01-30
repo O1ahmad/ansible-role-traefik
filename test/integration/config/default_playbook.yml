@@ -1,0 +1,34 @@
+---
+- name: Default playbook for testing
+  hosts: test-kitchen
+  roles:
+    - role: ansible-role-traefik
+      vars:
+        traefik_configs:
+          - config:
+              entryPoints:
+                web:
+                  address: :8081
+              providers:
+                file:
+                  directory: /mnt/etc/traefik/example-config.yml
+          - name: example-config
+            path: /mnt/etc/traefik
+            config:
+              http:
+                routers:
+                  to-whoami:
+                    rule: "Host(`domain`) && PathPrefix(`/whoami/`)"
+                    middlewares:
+                      - test-user
+                    service: whoami
+                middlewares:
+                  test-user:
+                    basicAuth:
+                      users:
+                        - test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
+                services:
+                  whoami:
+                    loadBalancer:
+                      servers:
+                        - url: http://private/whoami-service
