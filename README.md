@@ -91,11 +91,11 @@ See [here](https://docs.traefik.io/routing/overview/) for more details as well a
 `[traefik_configs: <entry>:] type: <yaml>` (**default**: *yaml*)
 - type or format of the configuration file to render. Currently only `YAML` is supported.
 
-`[traefik_configs: <entry>:] path: </path/to/config>` (**default**: */etc/consul.d*)
+`[traefik_configs: <entry>:] path: </path/to/config>` (**default**: */etc/traefik*)
 - path of the configuration file to render on the target host
 
 `[traefik_configs: <entry>:] config: <JSON>` (**default**: )
-- specifies parameters that manage various aspects of a consul agent's operations
+- specifies parameters that manage various aspects of a traefik agent's operations
 
 [Reference here](https://docs.traefik.io/reference/static-configuration/file/) for a list of supported configuration options.
 
