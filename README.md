@@ -72,46 +72,50 @@ _The following variables can be customized to control various aspects of this in
 
 #### Config
 
-Traefik supports specification of multiple routing and load-balancing configuration files or definitions for controlling various aspects of an agent's behavior. These definitions are expected to be expressed in either `JSON` or `HCL` format and to adhere to the syntax framework and rules outlined in *Consul's* official docs and as determined by the community.
+Traefik supports specification of multiple routing and load-balancing configuration files or definitions for controlling various aspects of an agent's behavior. These definitions are expected to be expressed in either `YAML` or `TOML` format and to adhere to the syntax framework and rules outlined in *Traefik's* official docs and as determined by the community.
 
-Each of these configurations can be expressed using the `consul_configs` hash, which contains a list of various Consul agent configuration options:
-* agent settings
-* config entries (e.g. service-defaults, service-routers, service-splitters)
-* service registrations
-* check or service healthcheck directives
+Each of these configurations can be expressed using the `traefik_configs` hash, which contains a list of various Traefik agent configuration options:
+* entrypoints
+* routers
+* middlewares
+* services
+* providers
 
-These hashes contain a list of structures specific to each configuration type for declaring the desired agent settings to be rendered in addition to common amongst them all, `:name, :path and :config` which specify the name and path of the configuration file to render and a hash of the configuration to set.
+Each hash is composed of structures specific to each configuration type for declaring the desired agent settings to be rendered in addition to common amongst them all, `:name, :path and :config`, which specify the name and path of the configuration file in addition to the configuration itself to render.
 
-See [here](https://www.consul.io/docs/agent/config_entries.html) for more details as well as a list of supported options for each configuration type and reference the following for a more in-depth explanation in addition to examples of each.
+See [here](https://docs.traefik.io/routing/overview/) for more details as well as a list of supported options for each configuration type and reference the following for a more in-depth explanation in addition to examples of each.
 
-`[consul_configs: <entry>:] name: <string>` (**default**: *required*)
+`[traefik_configs: <entry>:] name: <string>` (**default**: *required*)
 - name of the configuration file to render on the target host (excluding the file extension)
 
-`[consul_configs: <entry>:] type: <json|hcl>` (**default**: *json*)
-- type or format of the configuration file to render. Configuration can be either in JSON or [HCL](https://github.com/hashicorp/hcl#syntax) format.
+`[traefik_configs: <entry>:] type: <yaml>` (**default**: *yaml*)
+- type or format of the configuration file to render. Currently only `YAML` is supported.
 
-`[consul_configs: <entry>:] path: </path/to/config>` (**default**: */etc/consul.d*)
+`[traefik_configs: <entry>:] path: </path/to/config>` (**default**: */etc/consul.d*)
 - path of the configuration file to render on the target host
 
-  **Note:** When loading configuration, Consul loads the configuration from files and directories in lexical order. Configuration specified later will be merged into configuration specified earlier. In general, "merge" results in the later version override the earlier. In some cases, such as event handlers, merging appends the handlers to the existing configuration.
-
-`[consul_config: <entry>:] config: <JSON>` (**default**: )
+`[traefik_configs: <entry>:] config: <JSON>` (**default**: )
 - specifies parameters that manage various aspects of a consul agent's operations
 
-[Reference here](https://www.consul.io/docs/agent/options.html) for a list of supported configuration options.
+[Reference here](https://docs.traefik.io/reference/static-configuration/file/) for a list of supported configuration options.
 
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-config
       path: /example/path
       config:
-        data_dir: /var/lib/consul
-        log_level: debug
+        global:
+          checkNewVersion: true
+          sendAnonymousUsage: true
+        api:
+          insecure: true
+          dashboard: true
+          debug: true
   ```
   
-##### Service Definitions
+##### Entrypoints
 
 Agents provide a simple service definition format to declare the availability of a service and to potentially associate it with a health check. Each service definition must include a name and may optionally provide an *id, tags, address, meta, port, enable_tag_override, and check*. See [here](https://www.consul.io/docs/agent/services.html) for more details regarding these optional arguments and suggestions on their usage.
 
@@ -121,7 +125,7 @@ Agents provide a simple service definition format to declare the availability of
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-service-definition
       # type: json
       # path: /etc/consul.d
@@ -137,21 +141,14 @@ Agents provide a simple service definition format to declare the availability of
               interval: 10s
   ```
   
-##### Config Entries
+##### Routers
 
 Configuration entries can be created to provide cluster-wide defaults for various aspects of Consul. Every configuration entry has at least two fields: **Kind** and **Name**. Those two fields are used to uniquely identify a configuration entry. When put into configuration files, configuration entries can be specified as *HCL or JSON objects* using either snake_case or CamelCase for key names.
-
-###### Service Defaults
-
-Service Defaults, one of the five config entry objects supported by Consul, control default global values for a service, such as its protocol, MeshGateway topology settings, list of paths to expose through Envoy and ACLs or access-control-lists. Specification of these options are expected to be defined within the `config : config_entries : bootstrap` hash list. See [here](https://www.consul.io/docs/agent/config-entries/service-defaults.html) for more details regarding available configuration settings and suggested usage.
-
-`[consul_config: <entry>: config: config_entries : bootstrap:] <JSON list entry>` (**default**: [])
-- specifies parameters that manage default settings for a particular service group 
 
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-service-defaults
       config:
         config_entries:
@@ -161,7 +158,7 @@ Service Defaults, one of the five config entry objects supported by Consul, cont
               Protocol: http
   ```
   
-###### Proxy Defaults
+###### Middlewares
 
 Allowing for setting global proxy defaults across all services for Connect proxy configuration, *proxy defaults* express arbitrary values which depend on and determine the behavior of the specific Connect proxy being employed. Like *Service Defaults*, specification of these options are expected to be defined within the `config : config_entries : bootstrap` hash list.
 
@@ -173,7 +170,7 @@ See [here](https://www.consul.io/docs/agent/config-entries/proxy-defaults.html) 
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-proxy-defaults
       config:
         config_entries:
@@ -185,7 +182,7 @@ See [here](https://www.consul.io/docs/agent/config-entries/proxy-defaults.html) 
                 handshake_timeout_ms: 1000
   ```
   
-###### Service Router
+###### Services
 
 The service-router config entry kind controls Consul/Connect traffic routing and manipulation at networking layer 7 (e.g. HTTP). If a router is not explicitly configured or is configured with no routes then the system behaves as if a router were configured sending all traffic to a service of the same name.
 
@@ -199,7 +196,7 @@ See [here](https://www.consul.io/docs/agent/config-entries/service-router.html) 
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-proxy-defaults
       config:
         config_entries:
@@ -222,7 +219,7 @@ See [here](https://www.consul.io/docs/agent/config-entries/service-router.html) 
                     service_subset: canary
   ```
 
-###### Service Splitter
+###### Providers
 
 The service-splitter config entry kind controls how to split incoming Connect requests across different subsets of a single service (like during staged canary rollouts), or perhaps across different services (like during a v2 rewrite or other type of codebase migration).
 
@@ -236,7 +233,7 @@ See [here](https://www.consul.io/docs/agent/config-entries/service-splitter.html
 ##### Example
 
  ```yaml
-  consul_configs:
+  traefik_configs:
     - name: example-service-splitter
       config:
         config_entries:
@@ -248,36 +245,6 @@ See [here](https://www.consul.io/docs/agent/config-entries/service-splitter.html
                   service_subset: "v1"
                 - weight: 10
                   service_subset: "v2"
-  ```
-  
-###### Service Resolver
-
-The service-resolver config entry kind controls which service instances should satisfy Connect upstream discovery requests for a given service name.
-
-If no resolver config is defined the chain assumes 100% of traffic goes to the healthy instances of the default service in the current datacenter+namespace and discovery terminates.
-
-See [here](https://www.consul.io/docs/agent/config-entries/service-resolver.html) for more details regarding available configuration settings and suggested usage.
-
-`[consul_config: <entry>: config: config_entries : bootstrap:] <JSON list entry>` (**default**: [])
-- specifies parameters that manage which service instances should satisfy Connect upstream discovery requests for a given service name
-
-##### Example
-
- ```yaml
-  consul_configs:
-    - name: test-service-resolver
-        path: /mnt/etc/consul.d
-        config:
-          config_entries:
-            bootstrap:
-              - Kind: service-resolver
-                Name: example-api
-                default_subset: v1
-                subsets:
-                  v1:
-                    filter: "Service.Meta.version == v1"
-                  v2:
-                    filter: "Service.Meta.version == v2"
   ```
   
 #### Launch
