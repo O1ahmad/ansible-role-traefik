@@ -55,11 +55,11 @@ _The following variables can be customized to control various aspects of this in
 
   **note:** archived installation binaries can be obtained from the official [releases](https://github.com/containous/traefik/releases) site or those generated from development/custom sources.
 
-`install_dir: </path/to/installation/dir>` (**default**: `/opt/consul`)
+`install_dir: </path/to/installation/dir>` (**default**: `/opt/traefik`)
 - path on target host where the `traefik` binaries should be extracted to.
 
 `archive_url: <path-or-url-to-archive>` (**default**: see `defaults/main.yml`)
-- address of a compressed **tar or zip** archive containing `traefik` binaries. This method technically supports installation of any available version of `traefik`. Links to official versions can be found [here](https://releases.hashicorp.com/consul/).
+- address of a compressed **tar or zip** archive containing `traefik` binaries. This method technically supports installation of any available version of `traefik`. Links to official versions can be found [here](https://github.com/containous/traefik/releases).
 
 `archive_checksum: <path-or-url-to-checksum>` (**default**: see `defaults/main.yml`)
 - address of a checksum file or actual checksum for verifying the data integrity of the specified archive. While recommended and generally considered a best practice, specifying a checksum is *not required* and can be disabled by providing an empty string (`''`) for its value.
@@ -72,7 +72,7 @@ _The following variables can be customized to control various aspects of this in
 
 #### Config
 
-Consul supports specification of multiple configuration files or definitions for controlling various aspects of an agent's behavior. These definitions are expected to be expressed in either `JSON` or `HCL` format and to adhere to the syntax framework and rules outlined in *Consul's* official docs and as determined by the community.
+Traefik supports specification of multiple routing and load-balancing configuration files or definitions for controlling various aspects of an agent's behavior. These definitions are expected to be expressed in either `JSON` or `HCL` format and to adhere to the syntax framework and rules outlined in *Consul's* official docs and as determined by the community.
 
 Each of these configurations can be expressed using the `consul_configs` hash, which contains a list of various Consul agent configuration options:
 * agent settings
@@ -325,4 +325,4 @@ MIT
 Author Information
 ------------------
 
-This role was created in 2019 by O1.IO.
+This role was created in 2020 by O1.IO.
