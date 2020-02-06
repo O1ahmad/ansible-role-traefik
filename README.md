@@ -117,81 +117,88 @@ See [here](https://docs.traefik.io/routing/overview/) for more details as well a
   
 ##### Entrypoints
 
-Agents provide a simple service definition format to declare the availability of a service and to potentially associate it with a health check. Each service definition must include a name and may optionally provide an *id, tags, address, meta, port, enable_tag_override, and check*. See [here](https://www.consul.io/docs/agent/services.html) for more details regarding these optional arguments and suggestions on their usage.
+A part of what is termed as Traefik's "static configuration", entryPoints are the network entry points into Traefik. They define the port which will receive the requests (whether HTTP or TCP). Most of what happens to the connection between the clients and Traefik, and then between Traefik and the backend servers, is configured through the entrypoints in addition to routers.
 
-`[consul_config: <entry>: config: service:] <JSON>` (**default**: )
-- specifies parameters that manage Consul service registration
+See [here](https://docs.traefik.io/routing/entrypoints/) for more details regarding these options and suggestions on their usage.
+
+`[traefik_configs: <entry>: config: entrypoints:] <YAML>` (**default**: )
+- specifies parameters that manage Traefik entrypoint registration
 
 ##### Example
 
  ```yaml
   traefik_configs:
-    - name: example-service-definition
-      # type: json
-      # path: /etc/consul.d
+    - name: example-entrypoint
+      # type: yaml
+      # path: /etc/traefik
       config:
-        service:
-          id: redis
-          name: redis
-          tags: ['prod']
-          port: 8000
-          enable_tag_override: false
-          checks:
-            - args: ["/usr/local/bin/check_redis.py"],
-              interval: 10s
+        entryPoints:
+          web:
+            address: ":80"
+          websecure:
+            address: ":443"
   ```
   
 ##### Routers
 
-Configuration entries can be created to provide cluster-wide defaults for various aspects of Consul. Every configuration entry has at least two fields: **Kind** and **Name**. Those two fields are used to uniquely identify a configuration entry. When put into configuration files, configuration entries can be specified as *HCL or JSON objects* using either snake_case or CamelCase for key names.
+A router is in charge of connecting incoming requests to the services that can handle them. In the process, routers may use pieces of middleware to update the request, or act before forwarding the request to the service.
+
+See [here](https://docs.traefik.io/routing/routers/) for more details regarding these options and suggestions on their usage.
+
+`[traefik_configs: <entry>: config: <http|tcp>: routers] <YAML>` (**default**: )
+- specifies parameters that manage Traefik router registration
 
 ##### Example
 
  ```yaml
   traefik_configs:
-    - name: example-service-defaults
+    - name: example-router
       config:
-        config_entries:
-          bootstrap:
-            - Kind: service-defaults
-              Name: example-api
-              Protocol: http
+        http:
+          routers:
+            my-router:
+              rule: "Path(`/foo`)"
+              service: service-foo
   ```
   
 ###### Middlewares
 
-Allowing for setting global proxy defaults across all services for Connect proxy configuration, *proxy defaults* express arbitrary values which depend on and determine the behavior of the specific Connect proxy being employed. Like *Service Defaults*, specification of these options are expected to be defined within the `config : config_entries : bootstrap` hash list.
+Attached to the routers, pieces of middleware are a means of tweaking the requests before they are sent to your service (or before the answer from the services are sent to the clients). There are several available middleware in Traefik, some can modify the request, the headers, some are in charge of redirections, some add authentication, and so on.
 
-See [here](https://www.consul.io/docs/agent/config-entries/proxy-defaults.html) for more details regarding available Connect proxies, configuration settings and suggested usage.
+Pieces of middleware can be combined in chains to fit every scenario.
 
-`[consul_config: <entry>: config: config_entries : bootstrap:] <JSON list entry>` (**default**: [])
-- specifies parameters that manage default proxy settings for the global Consul namespace 
+See [here](https://docs.traefik.io/middlewares/overview/) for more details regarding these options and suggestions on their usage.
+
+`[traefik_configs: <entry>: config: <http|tcp>: middlewares] <YAML>` (**default**: )
+- specifies parameters that manage Traefik middleware registration
 
 ##### Example
 
  ```yaml
   traefik_configs:
-    - name: example-proxy-defaults
+    - name: example-middleware
       config:
-        config_entries:
-          bootstrap:
-            - Kind: proxy-defaults
-              Name: global
-              config:
-                local_connect_timeout_ms: 1000
-                handshake_timeout_ms: 1000
+        http:
+          routers:
+            router1:
+              service: myService
+              middlewares:
+                - "foo-add-prefix"
+              rule: "Host(`example.com`)"
+          middlewares:
+            foo-add-prefix:
+              addPrefix:
+                prefix: "/foo"
   ```
   
 ###### Services
 
-The service-router config entry kind controls Consul/Connect traffic routing and manipulation at networking layer 7 (e.g. HTTP). If a router is not explicitly configured or is configured with no routes then the system behaves as if a router were configured sending all traffic to a service of the same name.
+The Services are responsible for configuring how to reach the actual services that will eventually handle the incoming requests. Nested load balancers are able to load balance the requests between multiple instances of your services.
 
-Service router config entries are restricted to only services that define their protocol as http-based via a corresponding service-defaults config entry or globally via proxy-defaults. Like *Service Defaults*, specification of these options are expected to be defined within the `config : config_entries : bootstrap` hash list.
+See [here](https://docs.traefik.io/routing/services/) for more details regarding available configuration settings and suggested usage.
 
-See [here](https://www.consul.io/docs/agent/config-entries/service-router.html) for more details regarding available configuration settings and suggested usage.
-
-`[consul_config: <entry>: config: config_entries : bootstrap:] <JSON list entry>` (**default**: [])
-- specifies parameters that manage router settings for a particular group of services 
+`[traefik_configs: <entry>: config: <http|tcp>: services] <YAML>` (**default**: )
+- specifies parameters that manage Traefik service registration
 
 ##### Example
 
@@ -199,52 +206,41 @@ See [here](https://www.consul.io/docs/agent/config-entries/service-router.html) 
   traefik_configs:
     - name: example-proxy-defaults
       config:
-        config_entries:
-          bootstrap:
-            - Kind: service-router
-              Name: example-api
-              routes:
-                - match:
-                    http:
-                      path_prefix: /admin
-                  destination:
-                    service: admin
-                - match:
-                    http:
-                      header:
-                        - name: x-debug
-                          exact: 1
-                  destination:
-                    service: web
-                    service_subset: canary
+        http:
+          services:
+            my-service:
+              loadBalancer:
+                servers:
+                - url: "http://private-ip-server-1/"
+                - url: "http://private-ip-server-2/"
   ```
 
 ###### Providers
 
-The service-splitter config entry kind controls how to split incoming Connect requests across different subsets of a single service (like during staged canary rollouts), or perhaps across different services (like during a v2 rewrite or other type of codebase migration).
+Configuration discovery in Traefik is achieved through Providers. The providers are existing infrastructure components, whether orchestrators, container engines, cloud providers, or key-value stores. The idea is that Traefik will query the providers' API in order to find relevant information about routing, and each time Traefik detects a change, it dynamically updates the routes.
 
-If no splitter config is defined for a service it is assumed 100% of traffic flows to a service with the same name and discovery continues on to the resolution stage.
+Traefik are categorized according to the following 4 groups:
+* Label based (each deployed server/container has a set of labels attached to it)
+* Key-Value based (each deployed server/container updates a key-value store with relevant information)
+* Annotation based (a separate object, with annotations, defines the characteristics of the server/container)
+* File based (the good old configuration file)
 
-See [here](https://www.consul.io/docs/agent/config-entries/service-splitter.html) for more details regarding available configuration settings and suggested usage.
+See [here](https://docs.traefik.io/providers/overview/#supported-providers) for a list of supported providers and more details regarding available configuration settings and suggested usage.
 
-`[consul_config: <entry>: config: config_entries : bootstrap:] <JSON list entry>` (**default**: [])
-- specifies parameters that manage splitting of service traffic across various flows
+`[traefik_configs: <entry>: config: providers] <YAML>` (**default**: )
+- specifies parameters that manage Traefik service registration
 
 ##### Example
 
  ```yaml
   traefik_configs:
-    - name: example-service-splitter
+    - name: example-provider
       config:
-        config_entries:
-          bootstrap:
-            - Kind: service-splitter
-              Name: example-api
-              splits:
-                - weight: 90
-                  service_subset: "v1"
-                - weight: 10
-                  service_subset: "v2"
+       providers:
+         consulCatalog:
+           endpoint:
+             address: http://127.0.0.1:8500
+            # ...
   ```
   
 #### Launch
@@ -256,7 +252,7 @@ _The following variables can be customized to manage the service's **systemd** [
 `extra_run_args: <prometheus-cli-options>` (**default**: `[]`)
 - list of `traefik` commandline arguments to pass to the binary at runtime for customizing launch.
 
-Supporting full expression of `traefik`'s [cli](https://docs.traefik.io/reference/static-configuration/cli/), this variable enables the launch to be customized according to the user's specification.
+Supporting full expression of `traefik`'s [cli](https://docs.traefik.io/reference/static-configuration/cli/) and, subsequently the full set of configuration options as referenced and described above, this variable enables the launch to be customized according to the user's exact specification.
 
 `custom_unit_properties: <hash-of-systemd-service-settings>` (**default**: `[]`)
 - hash of settings used to customize the `[Service]` unit configuration and execution environment of the *Traefik* **systemd** service.
