@@ -10,7 +10,7 @@ checksum_format: sha256
 archive_options: []
 
 config_dir: /etc/traefik
-traefik_config: {}
+traefik_configs: []
 
 _service_name: traefik
 
