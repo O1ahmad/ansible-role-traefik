@@ -1,4 +1,4 @@
-title "Traefik configuration test-suite"
+title "Traefik configuration integration tests"
 
 describe directory('/etc/traefik') do
   it { should exist }

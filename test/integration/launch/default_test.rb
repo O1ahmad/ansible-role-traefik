@@ -1,4 +1,4 @@
-title "Traefik launch test-suite"
+title "Traefik service launch integration tests"
 
 describe service('traefik') do
   it { should be_installed }
