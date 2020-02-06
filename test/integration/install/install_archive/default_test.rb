@@ -1,4 +1,4 @@
-title "Traefik archive installation test-suite"
+title "Traefik archive installation integration tests"
 
 describe directory('/opt/traefik') do
   it { should exist }

@@ -1,4 +1,4 @@
-title "Traefik uninstall test suite"
+title "Traefik uninstallation integration tests"
 
 describe service('traefik') do
   it { should_not be_installed }
