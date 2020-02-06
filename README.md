@@ -204,7 +204,7 @@ See [here](https://docs.traefik.io/routing/services/) for more details regarding
 
  ```yaml
   traefik_configs:
-    - name: example-proxy-defaults
+    - name: example-service
       config:
         http:
           services:
