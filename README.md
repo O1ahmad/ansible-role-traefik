@@ -219,7 +219,7 @@ See [here](https://docs.traefik.io/routing/services/) for more details regarding
 
 Configuration discovery in Traefik is achieved through Providers. The providers are existing infrastructure components, whether orchestrators, container engines, cloud providers, or key-value stores. The idea is that Traefik will query the providers' API in order to find relevant information about routing, and each time Traefik detects a change, it dynamically updates the routes.
 
-Traefik are categorized according to the following 4 groups:
+Traefik providers are categorized according to the following 4 groups:
 * Label based (each deployed server/container has a set of labels attached to it)
 * Key-Value based (each deployed server/container updates a key-value store with relevant information)
 * Annotation based (a separate object, with annotations, defines the characteristics of the server/container)
@@ -228,7 +228,7 @@ Traefik are categorized according to the following 4 groups:
 See [here](https://docs.traefik.io/providers/overview/#supported-providers) for a list of supported providers and more details regarding available configuration settings and suggested usage.
 
 `[traefik_configs: <entry>: config: providers] <YAML>` (**default**: )
-- specifies parameters that manage Traefik service registration
+- specifies parameters that manage Traefik provider registration
 
 ###### Example
 
