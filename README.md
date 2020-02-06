@@ -99,7 +99,7 @@ See [here](https://docs.traefik.io/routing/overview/) for more details as well a
 
 [Reference here](https://docs.traefik.io/reference/static-configuration/file/) for a list of supported configuration options.
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
@@ -124,7 +124,7 @@ See [here](https://docs.traefik.io/routing/entrypoints/) for more details regard
 `[traefik_configs: <entry>: config: entrypoints:] <YAML>` (**default**: )
 - specifies parameters that manage Traefik entrypoint registration
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
@@ -148,7 +148,7 @@ See [here](https://docs.traefik.io/routing/routers/) for more details regarding 
 `[traefik_configs: <entry>: config: <http|tcp>: routers] <YAML>` (**default**: )
 - specifies parameters that manage Traefik router registration
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
@@ -161,7 +161,7 @@ See [here](https://docs.traefik.io/routing/routers/) for more details regarding 
               service: service-foo
   ```
   
-###### Middlewares
+##### Middlewares
 
 Attached to the routers, pieces of middleware are a means of tweaking the requests before they are sent to your service (or before the answer from the services are sent to the clients). There are several available middleware in Traefik, some can modify the request, the headers, some are in charge of redirections, some add authentication, and so on.
 
@@ -172,7 +172,7 @@ See [here](https://docs.traefik.io/middlewares/overview/) for more details regar
 `[traefik_configs: <entry>: config: <http|tcp>: middlewares] <YAML>` (**default**: )
 - specifies parameters that manage Traefik middleware registration
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
@@ -191,7 +191,7 @@ See [here](https://docs.traefik.io/middlewares/overview/) for more details regar
                 prefix: "/foo"
   ```
   
-###### Services
+##### Services
 
 The Services are responsible for configuring how to reach the actual services that will eventually handle the incoming requests. Nested load balancers are able to load balance the requests between multiple instances of your services.
 
@@ -200,7 +200,7 @@ See [here](https://docs.traefik.io/routing/services/) for more details regarding
 `[traefik_configs: <entry>: config: <http|tcp>: services] <YAML>` (**default**: )
 - specifies parameters that manage Traefik service registration
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
@@ -215,7 +215,7 @@ See [here](https://docs.traefik.io/routing/services/) for more details regarding
                 - url: "http://private-ip-server-2/"
   ```
 
-###### Providers
+##### Providers
 
 Configuration discovery in Traefik is achieved through Providers. The providers are existing infrastructure components, whether orchestrators, container engines, cloud providers, or key-value stores. The idea is that Traefik will query the providers' API in order to find relevant information about routing, and each time Traefik detects a change, it dynamically updates the routes.
 
@@ -230,7 +230,7 @@ See [here](https://docs.traefik.io/providers/overview/#supported-providers) for 
 `[traefik_configs: <entry>: config: providers] <YAML>` (**default**: )
 - specifies parameters that manage Traefik service registration
 
-##### Example
+###### Example
 
  ```yaml
   traefik_configs:
