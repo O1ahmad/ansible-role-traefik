@@ -50,7 +50,7 @@ _The following variables can be customized to control various aspects of this in
 `traefik_user: <service-user-name>` (**default**: *traefik*)
 - dedicated service user and group used by `traefik` for privilege separation (see [here](https://www.beyondtrust.com/blog/entry/how-separation-privilege-improves-security) for details)
 
-`install_type: <archive | source>` (**default**: archive)
+`install_type: <archive>` (**default**: archive)
 - **archive**: currently compatible with both **tar and zip** formats, installation of Traefik via compressed archives results in the direct download of its component binaries, consisting of the `traefik` proxy server.
 
   **note:** archived installation binaries can be obtained from the official [releases](https://github.com/containous/traefik/releases) site or those generated from development/custom sources.
