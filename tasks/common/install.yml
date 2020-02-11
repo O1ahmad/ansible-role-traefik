@@ -21,12 +21,12 @@
     - install
 
 - name: Create installation directory
+  become: true
   file:
     path: "{{ install_dir }}"
     state: directory
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
-  become: true
   tags:
     - install
 
@@ -36,13 +36,14 @@
     - install
 
 - name: Create a symbolic link to installed binary
+  become: true
+  when: install_type == "archive"
   file:
     src: "{{ install_dir }}/traefik"
     dest: "{{ exe_dir }}/traefik"
     owner: "{{ traefik_user }}"
     group: "{{ traefik_user }}"
     state: link
-  when: install_type == "archive"
   tags:
     - install
     - archive

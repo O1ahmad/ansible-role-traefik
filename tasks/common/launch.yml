@@ -1,7 +1,7 @@
 ---
 - name: Set unit [Service] configuration
   set_fact:
-    default_service_unit:
+    _default_service_unit:
       ExecStart: "{{ exe_dir }}/traefik {{ extra_run_args|join(' ') }}"
       User: "{{ traefik_user }}"
       Group: "{{ traefik_user }}"
@@ -22,7 +22,7 @@
           Documentation: https://docs.traefik.io/
           Wants: network-online.target
           After: network-online.target
-        Service: "{{ default_service_unit | combine(custom_unit_properties) }}"
+        Service: "{{ _default_service_unit | combine(custom_unit_properties) }}"
         Install:
           WantedBy: multi-user.target
   tags:
