@@ -14,6 +14,7 @@
     state: stopped
     enabled: false
   listen: Uninstall service
+  ignore_errors: true
 
 - name: Remove Traefik systemd service file
   become: true
@@ -39,21 +40,21 @@
 
 - name: Remove Traefik log directories and files
   become: true
+  when: item.config.traefikLog.filePath is defined
   file:
     path: "{{ item.config.traefikLog.filePath }}"
     state: absent
-  listen: Uninstall service
-  when: item.config.traefikLog.filePath is defined
   with_items: "{{ traefik_configs }}"
+  listen: Uninstall service
 
 - name: Remove Traefik access log directories and files
   become: true
+  when: item.config.accessLog.filePath is defined
   file:
     path: "{{ item.config.accessLog.filePath }}"
     state: absent
-  listen: Uninstall service
-  when: item.config.accessLog.filePath is defined
   with_items: "{{ traefik_configs }}"
+  listen: Uninstall service
 
 - name: Remove Traefik user
   become: true
