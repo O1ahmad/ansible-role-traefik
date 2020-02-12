@@ -237,11 +237,11 @@ See [here](https://docs.traefik.io/providers/overview/#supported-providers) for 
   traefik_configs:
     - name: example-provider
       config:
-       providers:
-         consulCatalog:
-           endpoint:
-             address: http://127.0.0.1:8500
-            # ...
+        providers:
+          consulCatalog:
+            endpoint:
+              address: http://127.0.0.1:8500
+              # ...
   ```
   
 #### Launch
@@ -278,7 +278,94 @@ default example:
 ```
 - hosts: all
   roles:
+  - role: 0x0I.traefik
+```
+
+download and install specific version of Traefik binaries:
+```
+- hosts: all
+  roles:
+  - role: 0x0I.traefik
+    vars:
+      install_type: archive
+      archive_url: https://github.com/containous/traefik/releases/download/v2.1.4/traefik_v2.1.4_linux_amd64.tar.gz
+      archive_checksum: a0023d3b01c881cffc89b5b69d51d8e86d4e9ac87e87d57a9029731a83780893
+```
+
+enable debug logging for troubleshooting purposes:
+```
+- hosts: all
+  roles:
+  - role: 0x0I.traefik
+    vars:
+      traefik_configs:
+        - name: log-settings
+          config:
+            log:
+              level: DEBUG
+              filePath: /var/log/traefik/traefik.log
+              format: json
+            accessLog:
+              filePath: /var/log/traefik/access.log
+              format: json
+              bufferingSize: 100
+              filters:
+                statusCodes:
+                - 500-511
+                - 400-451
+                - 308
+                retryAttempts: true
+                minDuration: 10ms
+```
+
+enable Prometheus metrics collection and reporting:
+```
+- hosts: all
+  roles:
+  - role: 0x0I.traefik
+    vars:
+      traefik_configs:
+        - name: prometheus-metrics
+          config:
+            entryPoints:
+              metrics:
+                address: ":8082"
+            metrics:
+              prometheus:
+                entryPoint: metrics
+                addEntryPointsLabels: true
+                addServicesLabels: true
+                buckets:
+                  - 0.1
+                  - 0.3
+                  - 1.2
+                  - 5.0
+```
+
+configure Consul provider:
+```
+- hosts: all
+  roles:
   - role: 0xOI.traefik
+    vars:
+      traefik_configs:
+        - name: consul-provider
+          config:
+           providers:
+             consulCatalog:
+               stale: false
+               cache: true
+               exposedByDefault: false
+               endpoint:
+                 address: https://127.0.0.1:8500
+                 scheme: https
+                 datacenter: staging
+               tls:
+                 ca: path/to/ca.crt
+                 caOptional: true
+                 cert: "path/to/foo.cert"
+                 key: "path/to/foo.key"
+                 insecureSkipVerify: true
 ```
 
 License
