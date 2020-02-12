@@ -314,8 +314,8 @@ enable debug logging for troubleshooting purposes:
                 - 500-511
                 - 400-451
                 - 308
-                retryAttempts: true
-                minDuration: 10ms
+              retryAttempts: true
+              minDuration: 10ms
 ```
 
 enable Prometheus metrics collection and reporting:
@@ -363,8 +363,8 @@ configure Consul provider:
                tls:
                  ca: path/to/ca.crt
                  caOptional: true
-                 cert: "path/to/foo.cert"
-                 key: "path/to/foo.key"
+                 cert: path/to/foo.cert
+                 key: path/to/foo.key
                  insecureSkipVerify: true
 ```
 
