@@ -3,9 +3,10 @@
 Ansible Role :clapper: :twisted_rightwards_arrows: Traefik
 =========
 [![Galaxy Role](https://img.shields.io/ansible/role/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
-[![Downloads](https://img.shields.io/ansible/role/d/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/0x0I/ansible-role-traefik?color=yellow)
+[![Downloads](https://img.shields.io/ansible/role/d/46109.svg?color=lightgrey)](https://galaxy.ansible.com/0x0I/traefik)
 [![Build Status](https://travis-ci.org/0x0I/ansible-role-traefik.svg?branch=master)](https://travis-ci.org/0x0I/ansible-role-traefik)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
 
 **Table of Contents**
   - [Supported Platforms](#supported-platforms)
@@ -20,7 +21,7 @@ Ansible Role :clapper: :twisted_rightwards_arrows: Traefik
   - [License](#license)
   - [Author Information](#author-information)
 
-Ansible role that installs and configures Traefik: a dynamic service load-balancer and edge router
+Ansible role that installs and configures Traefik: a dynamic service reverse-proxy and load-balancer.
 
 ##### Supported Platforms:
 ```
@@ -65,10 +66,10 @@ _The following variables can be customized to control various aspects of this in
 - address of a checksum file or actual checksum for verifying the data integrity of the specified archive. While recommended and generally considered a best practice, specifying a checksum is *not required* and can be disabled by providing an empty string (`''`) for its value.
 
 `checksum_format: <string>` (**default**: see `sha512`)
-- hash algorithm used for file verification associated with the specified archive or package checksum. Reference [here](https://en.wikipedia.org/wiki/Cryptographic_hash_function) for more information about *checksums/cryptographic* hashes.
+- hash algorithm used for file verification associated with the specified archive checksum. Reference [here](https://en.wikipedia.org/wiki/Cryptographic_hash_function) for more information about *checksums/cryptographic* hashes.
 
 `archive_options: <untar-or-unzip-options>` (**default**: `[]`)
-- list of additional unarchival arguments to pass to either the `tar` or `unzip` binary at runtime for customizing how the archive is extracted to the designated installation directory. See [<man tar>](https://linux.die.net/man/1/tar) and [<man unzip>](https://linux.die.net/man/1/unzip) for available options to specify, respectively.
+- list of additional unarchival arguments to pass to either the `tar` or `unzip` binary at runtime for customizing how the archive is extracted to the designated installation directory. See [man tar](https://linux.die.net/man/1/tar) and [man unzip](https://linux.die.net/man/1/unzip) for available options to specify, respectively.
 
 #### Config
 
@@ -88,7 +89,7 @@ See [here](https://docs.traefik.io/routing/overview/) for more details as well a
 `[traefik_configs: <entry>:] name: <string>` (**default**: *required*)
 - name of the configuration file to render on the target host (excluding the file extension)
 
-`[traefik_configs: <entry>:] type: <yaml>` (**default**: *yaml*)
+`[traefik_configs: <entry>:] type: <yaml|toml>` (**default**: *yaml*)
 - type or format of the configuration file to render. Currently only `YAML` is supported.
 
 `[traefik_configs: <entry>:] path: </path/to/config>` (**default**: */etc/traefik*)
@@ -193,7 +194,7 @@ See [here](https://docs.traefik.io/middlewares/overview/) for more details regar
   
 ##### Services
 
-The Services are responsible for configuring how to reach the actual services that will eventually handle the incoming requests. Nested load balancers are able to load balance the requests between multiple instances of your services.
+Services are responsible for configuring how to reach the actual services that will eventually handle the incoming requests. Nested load balancers are able to load balance the requests between multiple instances of your services.
 
 See [here](https://docs.traefik.io/routing/services/) for more details regarding available configuration settings and suggested usage.
 
@@ -245,11 +246,11 @@ See [here](https://docs.traefik.io/providers/overview/#supported-providers) for 
   
 #### Launch
 
-This role supports launching either a `traefik` server proxy utilizing the [systemd](https://www.freedesktop.org/wiki/Software/systemd/) service management tool, which manages the service as a background process or daemon subject to the configuration and execution potential provided by its underlying management framework.
+This role supports launching a `traefik` server proxy utilizing the [systemd](https://www.freedesktop.org/wiki/Software/systemd/) service management tool, which manages the service as a background process or daemon subject to the configuration and execution potential provided by its underlying management framework.
 
 _The following variables can be customized to manage the service's **systemd** [Service] unit definition and execution profile/policy:_
 
-`extra_run_args: <prometheus-cli-options>` (**default**: `[]`)
+`extra_run_args: <traefik-cli-options>` (**default**: `[]`)
 - list of `traefik` commandline arguments to pass to the binary at runtime for customizing launch.
 
 Supporting full expression of `traefik`'s [cli](https://docs.traefik.io/reference/static-configuration/cli/) and, subsequently the full set of configuration options as referenced and described above, this variable enables the launch to be customized according to the user's exact specification.
@@ -259,7 +260,7 @@ Supporting full expression of `traefik`'s [cli](https://docs.traefik.io/referenc
 
 #### Uninstall
 
-Support for uninstalling and removing artifacts necessary for provisioning allows for users/operators to return a target host to its configured state prior to application of this role. This can be useful for recycling nodes and roles and perhaps providing more graceful/managed transitions between tooling upgrades.
+Support for uninstalling and removing artifacts necessary for provisioning allows for users/operators to return a target host to its configured state prior to application of this role. This can be useful for recycling nodes and perhaps providing more graceful/managed transitions between tooling upgrades.
 
 _The following variable(s) can be customized to manage this uninstall process:_
 
