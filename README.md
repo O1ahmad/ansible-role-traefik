@@ -368,6 +368,26 @@ configure Consul provider:
                  insecureSkipVerify: true
 ```
 
+activate Jaeger tracing:
+```
+- hosts: all
+  roles:
+  - role: 0x0I.traefik
+    vars:
+      traefik_configs:
+        - name: jaeger-tracing
+          config:
+            tracing:
+              jaeger:
+                samplingServerURL: http://localhost:5778/sampling
+                samplingType: const
+                samplingParam: 1.0
+                localAgentHostPort: 127.0.0.1:6831
+                gen128Bit: true
+                traceContextHeaderName: example-trace-id
+                endpoint: http://127.0.0.1:14268/api/traces?format=jaeger.thrift
+```
+
 License
 -------
 
