@@ -22,6 +22,7 @@
     path: "/etc/systemd/system/{{ _service_name }}.service"
     state: absent
   listen: Uninstall service
+  ignore_errors: true
 
 - name: Remove Traefik install dir
   become: true
