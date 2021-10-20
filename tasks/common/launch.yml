@@ -15,6 +15,7 @@
   include_role:
     name: 0x0i.systemd
   vars:
+    perform_uninstall: "{{ perform_uninstall }}"
     unit_config:
       - name: "{{ _service_name }}"
         Unit:

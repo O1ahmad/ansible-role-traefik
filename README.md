@@ -243,10 +243,6 @@ See [here](https://docs.traefik.io/providers/overview/#supported-providers) for 
   
 #### Launch
 
-This role supports launching a `traefik` server proxy utilizing the [systemd](https://www.freedesktop.org/wiki/Software/systemd/) service management tool, which manages the service as a background process or daemon subject to the configuration and execution potential provided by its underlying management framework.
-
-_The following variables can be customized to manage the service's **systemd** [Service] unit definition and execution profile/policy:_
-
 `extra_run_args: <traefik-cli-options>` (**default**: `[]`)
 - list of `traefik` commandline arguments to pass to the binary at runtime for customizing launch.
 
