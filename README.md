@@ -3,10 +3,8 @@
 
 Ansible Role :clapper: :twisted_rightwards_arrows: Traefik
 =========
-[![Galaxy Role](https://img.shields.io/ansible/role/46109.svg)](https://galaxy.ansible.com/0x0I/traefik)
+[![Galaxy Role](https://img.shields.io/ansible/role/d/0x0i/traefik)](https://galaxy.ansible.com/0x0I/traefik)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/0x0I/ansible-role-traefik?color=yellow)
-[![Downloads](https://img.shields.io/ansible/role/d/46109.svg?color=lightgrey)](https://galaxy.ansible.com/0x0I/traefik)
-[![Build Status](https://travis-ci.org/0x0I/ansible-role-traefik.svg?branch=master)](https://travis-ci.org/0x0I/ansible-role-traefik)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
 
 **Table of Contents**
